@@ -91,3 +91,34 @@ console.log(prepend(10, prepend(20, null)));
 // → {value: 10, rest: {value: 20, rest: null}}
 console.log(nth(arrayToList([10, 20, 30]), 1));
 // → 20
+
+/* 4.4 deep comparison */
+// This could be cleaned up a lot
+function deepEqual(a, b) {
+  if(typeof a === 'object' && typeof b === 'object') {
+    if((a === null && b !== null) || (a !== null && b === null)) {
+       return false;
+    }
+    for(key of Object.keys(a)) {
+      if(!deepEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    for(key of Object.keys(b)) {
+      if(!deepEqual(b[key], a[key])) {
+        return false;
+      }
+    }
+  } else {
+    return a === b;
+  }
+  return true;
+}
+
+let obj = {here: {is: "an"}, object: 2};
+console.log(deepEqual(obj, obj));
+// → true
+console.log(deepEqual(obj, {here: 1, object: 2}));
+// → false
+console.log(deepEqual(obj, {here: {is: "an"}, object: 2}));
+// → true
