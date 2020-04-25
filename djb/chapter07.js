@@ -1,3 +1,4 @@
+/* The Robot */
 function daveRobot({place, parcels}, route) {
   if (route.length == 0) {
     route = parcels.map(parcel => {
@@ -38,3 +39,42 @@ for(robot of Object.keys(candidates)) {
   results.push(`${robot} finished in an average of ${average} turns.`);
 }
 console.log(results);
+
+/* PGroup */
+class PGroup {
+  constructor(items) {
+    this.items = items || [];
+  }
+  static empty =  new PGroup([]);
+  
+  static from(arr) {
+    return new PGroup(arr);
+  }
+  
+  has(x) {
+    return this.items.includes(x);
+  }
+  
+  add(x) {
+    const newItems = [...this.items];
+    if(!this.has(x)) {
+      newItems.push(x);
+    }
+    return new PGroup(newItems);
+  }
+  
+  delete(x) {
+    return new PGroup(this.items.filter(item => item !== x));
+  }
+}
+
+let a = PGroup.empty.add("a");
+let ab = a.add("b");
+let b = ab.delete("a");
+
+console.log(b.has("b"));
+// → true
+console.log(a.has("b"));
+// → false
+console.log(b.has("a"));
+// → false
