@@ -21,20 +21,50 @@ function daveRobot({place, parcels}, route) {
   return {direction: route[0], memory: route.slice(1)};
 }
 
+function daveRobot2({place, parcels}, route) {
+  if (route.length == 0) {
+    route = parcels.map(parcel => {
+      if (parcel.place === place) {
+        // This parcel is collected. Find route to it's drop off place
+        return { priority: 0, route: findRoute(roadGraph, place, parcel.address) };
+      } else {
+        // This parcel is uncollected. Find route to it's pickup place
+        return { priority: 1, route: findRoute(roadGraph, place, parcel.place) };
+      }
+    }).reduce((best, candidate) => {
+      // Find the shortest route.
+      if(best === null) {
+        return candidate;
+      } else if(candidate.route.length === best.route.length) {
+        // compare priority. Prefer pickups to deliveries.
+        return candidate.priority > best.priority ? candidate : best;
+      } else if(candidate.route.length < best.route.length) {
+        return candidate;
+      } else {
+        return best;
+      }
+    }, null).route;
+  }
+  return {direction: route[0], memory: route.slice(1)};
+}
+
 const candidates = {
   randomRobot,
   routeRobot,
   goalOrientedRobot,
-  daveRobot
+  daveRobot,
+  daveRobot2,
 };
 
+const tests = [];
 const results = [];
+for(let i = 0; i < 100; i++) {
+  tests.push(VillageState.random());
+}
+
 for(robot of Object.keys(candidates)) {
   console.log(`Testing ${robot}`);
-  const robotResults = [];
-  for(let i = 0; i < 100; i++) {
-    robotResults.push(runRobot(VillageState.random(), candidates[robot], []));
-  }
+  const robotResults = tests.map(test => runRobot(test, candidates[robot], []));
   const average = robotResults.reduce((prev, cur) => prev + cur) / robotResults.length;
   results.push(`${robot} finished in an average of ${average} turns.`);
 }
