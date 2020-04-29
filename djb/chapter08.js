@@ -41,17 +41,23 @@ const box = {
 
 function withBoxUnlocked(body) {
   // Your code here.
+  let startedUnlocked = !box.locked;
   try {
     box.unlock();
-  	body();
+    body();
   } finally {
     box.lock();
+  }
+  if(startedUnlocked) {
+    box.unlock();
   }
 }
 
 withBoxUnlocked(function() {
   box.content.push("gold piece");
 });
+console.log(box.locked);
+// → true
 
 try {
   withBoxUnlocked(function() {
@@ -62,3 +68,10 @@ try {
 }
 console.log(box.locked);
 // → true
+
+box.unlock();
+withBoxUnlocked(function() {
+  box.content.push("gold piece");
+});
+console.log(box.locked);
+// → false
