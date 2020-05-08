@@ -48,3 +48,8 @@ function verify(regexp, yes, no) {
     console.log(`Unexpected match for '${str}' at ${regexp.exec(str).index}`);
   }
 }
+
+/* 9.2 Quoting Style */
+let text = "'I'm the cook,' he said, 'it's my job.'";
+console.log(text.replace(/(^|\W)'|'(\W|$)/g, '$1"$2')); // I looked at this answer
+// → "I'm the cook," he said, "it's my job."
