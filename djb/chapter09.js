@@ -1,3 +1,5 @@
+// https://regexper.com/ is amazing
+
 /* 9.1 Regex Golf */
 
 // Fill in the regular expressions
